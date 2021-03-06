@@ -12,7 +12,9 @@ Abstract
 Appendix
 
 https://github.com/pranjaldatta/Denoising-Autoencoder-in-Pytorch
+
 https://www.kaggle.com/talmanr/cnn-with-pytorch-using-mel-features
+
 https://github.com/kfir1989/TAU_DL
 
 
