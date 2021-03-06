@@ -3,13 +3,13 @@ Acoustic Scene Classification and Time of Day Estimation
 
 
 
-Abstract 
+**Abstract **
 
 <>
 
 
 
-Appendix
+**Appendix**
 
 https://github.com/pranjaldatta/Denoising-Autoencoder-in-Pytorch
 
@@ -20,7 +20,7 @@ https://github.com/kfir1989/TAU_DL
 
 
 
-Results
+**Results**
 
 ALGORITHMS	VALIDATION ACC.	EVALUATION ACC
 
