@@ -3,7 +3,7 @@ Acoustic Scene Classification and Time of Day Estimation
 
 
 
-**Abstract **
+**Abstract**
 
 We present a system for time-of-day prediction based on recorded environmental acoustic information. The system’s architecture is inspired by a recent work in the field of acoustic scene classification, and is comprised of an ensemble model of deep convolutional neural networks trained separately on differently processed versions of the raw audio data. We address the problem of attempting to predict a continuous parameter with a bounded, cyclic nature using machine leaning methodologies, identify some key restrictions this problem entails and propose a solution. The proposed model’s predications achieve a root mean-squared-error of  116.02 minutes on the evaluation data set. Finally, we utilize some recently proposed methods to try and gain intuition into the trained model’s decision making process, and attempt to identify meaningful features in the processed input data.
 
