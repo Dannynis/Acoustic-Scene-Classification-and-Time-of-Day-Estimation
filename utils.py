@@ -44,30 +44,34 @@ class Dataset(torch.utils.data.Dataset):
     def __len__(self):
         'Denotes the total number of samples'
         return len(self.df)
-
+    print('reversing dataset')
     def __getitem__(self, index):
         try:
           'Generates one sample of data'
           file_name = self.df.path[index]
+          name = self.df.name[index]
           sig = get_sig(file_name, self.sample_rate)
           # S = createHPSS(sig)
           #torch.from_numpy(S).float()
 
-          return sig, self.df.time_of_the_day[index]
+          return name,sig, self.df.time_of_the_day[index]
         except:
-           return None,None,None
+           import traceback
+           print(traceback.format_exc())
+           return torch.zeros(1),torch.zeros(1),torch.zeros(1)
 
 
-test_df = pd.read_csv(r"D:\git\Acoustic-Scene-Classification-and-Time-of-Day-Estimation\TestSet\labels.csv")
-train_df = pd.read_csv(r"D:\git\Acoustic-Scene-Classification-and-Time-of-Day-Estimation\DataSet\labels.csv")
+test_df = pd.read_csv("/content/drive/MyDrive/Acoustic-Scene-Classification-and-Time-of-Day-Estimation/TestSet/labels.csv")
+train_df = pd.read_csv("/content/drive/MyDrive/Acoustic-Scene-Classification-and-Time-of-Day-Estimation/DataSet/labels.csv")
 train_df['name'] = train_df['filename'].apply(lambda x:x.split('.')[0])
 test_df['name'] = test_df['filename'].apply(lambda x:x.split('.')[0])
 from pathlib import Path
 
-files = [str(x) for x in Path(r'D:\Birds_audio').rglob('*.flac')]
+files = [str(x) for x in Path("/content/drive/MyDrive/birds_project/bird identification2_old").rglob('*.WAV')]
+files.reverse()
+df_lst = [(x,x.split('/')[-3].split(' ')[1],x.split('/')[-1].split('.')[0]) for x in files]
 
-df_lst = [(x,x.split('\\')[-1].split('_')[0],'_'.join(x.split('\\')[-1].split('.')[0].split('_')[1:])) for x in files]
-
+files_df = pd.DataFrame(df_lst,columns=['path','spot','name'])
 files_df = pd.DataFrame(df_lst,columns=['path','spot','name'])
 files_df.spot = files_df.spot.astype('int64')
 merged_train = train_df.merge(files_df,'inner',left_on=['name','label'],right_on=['name','spot'])
