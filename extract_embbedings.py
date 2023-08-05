@@ -7,8 +7,9 @@ import torch
 import tqdm
 import pickle
 
+import os
 import sys
-sys.path.append(r'D:\git\PaSST')
+sys.path.append("/content/drive/MyDrive/Acoustic-Scene-Classification-and-Time-of-Day-Estimation/PaSST")
 from models.passt import get_model
 from models.preprocess import AugmentMelSTFT
 
@@ -29,13 +30,29 @@ if __name__ == '__main__':
     model = model.cuda()
 
     ds = Dataset(files_df,32000)
-    dl = DataLoader(ds,num_workers=8,prefetch_factor=10)
+    dl = DataLoader(ds,num_workers=2,prefetch_factor=5)
 
     embeds = []
-    for a in tqdm.tqdm(dl,total=len(ds)):
-        with torch.no_grad():
-            melspec = mel(torch.tensor(a[0])).unfold(-1,998,998).permute(2,0,1,3)
-            embed = model(melspec.cuda())
+    for i,(spot,name,sig,time) in enumerate(tqdm.tqdm(dl,total=len(ds))):
+        if sig.shape[-1] == 1:
+          continue
+        try:
+            new_path = f'./embeds2/{name[0]}.pkl'
+            if os.path.exists(new_path):
+              print('found')
+              continue
+            with torch.no_grad():
+                melspec = mel(torch.tensor(sig)).unfold(-1,998,998).permute(2,0,1,3)
+                embed = model(melspec.cuda())
+                with open(new_path,'wb') as f:
+                  pickle.dump(embed,f)
+        except OSError:
+          print('REMAUNTING')
+          from google.colab import drive
+          drive.mount('/content/drive',force_remount=True)
+        except:
+            import traceback
+            print(traceback.format_exc())
 
-    with open('./embeds.pkl','wb') as f:
-        pickle.dump(embed)
+    # with open('./embeds.pkl','wb') as f:
+    #     pickle.dump(embed)
