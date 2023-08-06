@@ -64,34 +64,34 @@ class Dataset(torch.utils.data.Dataset):
            return torch.zeros(1),torch.zeros(1),torch.zeros(1)
 
 
-test_df = pd.read_csv("/content/drive/MyDrive/Acoustic-Scene-Classification-and-Time-of-Day-Estimation/TestSet/labels.csv")
-train_df = pd.read_csv("/content/drive/MyDrive/Acoustic-Scene-Classification-and-Time-of-Day-Estimation/DataSet/labels.csv")
+test_df = pd.read_csv(r"D:\git\Acoustic-Scene-Classification-and-Time-of-Day-Estimation\TestSet\encoded_labels.csv")
+train_df = pd.read_csv(r"D:\git\Acoustic-Scene-Classification-and-Time-of-Day-Estimation\DataSet\encoded_labels.csv")
 train_df['name'] = train_df['filename'].apply(lambda x:x.split('.')[0])
 test_df['name'] = test_df['filename'].apply(lambda x:x.split('.')[0])
 from pathlib import Path
 
-files = [str(x) for x in Path("/content/drive/MyDrive/birds_project/bird identification2_old").rglob('*.WAV')]
+files = [str(x) for x in Path(r"D:\Birds_audio").rglob('*.flac')]
 files.reverse()
 
 
 df_lst = [(x,x.split('/')[-3].split(' ')[1],x.split('/')[-3].split(' ')[1]+'_'+x.split('/')[-1].split('.')[0]) for x in files]
 
-ignore_dir = "/content/drive/MyDrive/Acoustic-Scene-Classification-and-Time-of-Day-Estimation/embeds2"
-ignore_lst = set([str(x).split('/')[-1].split('.')[0] for x in Path(ignore_dir).rglob('*')])
+# ignore_dir = "/content/drive/MyDrive/Acoustic-Scene-Classification-and-Time-of-Day-Estimation/embeds2"
+# ignore_lst = set([str(x).split('/')[-1].split('.')[0] for x in Path(ignore_dir).rglob('*')])
 
-print(f'{len(ignore_lst)} in ignore list filtering....')
-filter_counter = 0
-filtered_df_lst = []
-for d in tqdm.tqdm(df_lst):
-  if d[-1] in ignore_lst:
-    filter_counter+=1
-    continue
-  else:
-    filtered_df_lst.append(d)
+# print(f'{len(ignore_lst)} in ignore list filtering....')
+# filter_counter = 0
+# filtered_df_lst = []
+# for d in tqdm.tqdm(df_lst):
+#   if d[-1] in ignore_lst:
+#     filter_counter+=1
+#     continue
+#   else:
+#     filtered_df_lst.append(d)
 
-print(f'\nfiltered {filter_counter}')
+# print(f'\nfiltered {filter_counter}')
 
-files_df = pd.DataFrame(filtered_df_lst,columns=['path','spot','name'])
+files_df = pd.DataFrame(df_lst,columns=['path','spot','name'])
 files_df.spot = files_df.spot.astype('int64')
 merged_train = train_df.merge(files_df,'inner',left_on=['name','label'],right_on=['name','spot'])
 merged_test = test_df.merge(files_df,'inner',left_on=['name','label'],right_on=['name','spot'])
